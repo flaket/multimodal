@@ -1,0 +1,91 @@
+Language model created by QuickLM on Wed Feb 25 02:23:00 EST 2015
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 13 sentences and 18 words
+
+\data\
+ngram 1=18
+ngram 2=29
+ngram 3=21
+
+\1-grams:
+-0.8592 </s> -0.3010
+-0.8592 <s> -0.2364
+-1.9731 BATHROOM -0.2773
+-1.9731 BEDROOM -0.2773
+-1.9731 DIAGNOSTICS -0.2364
+-1.9731 DINNER -0.2364
+-1.9731 DOOR -0.2364
+-1.9731 FRONT -0.2964
+-1.9731 GARAGE -0.2364
+-1.9731 HALL -0.2773
+-1.6721 KITCHEN -0.2724
+-1.2742 LIGHTS -0.2364
+-1.9731 LIVING -0.2964
+-1.9731 MUSIC -0.2364
+-1.9731 POWER -0.2364
+-1.9731 RADIO -0.2364
+-1.9731 ROOM -0.2773
+-1.9731 TV -0.2364
+
+\2-grams:
+-1.4150 <s> BATHROOM 0.0000
+-1.4150 <s> BEDROOM 0.0000
+-1.4150 <s> DIAGNOSTICS 0.0000
+-1.4150 <s> DINNER 0.0000
+-1.4150 <s> FRONT 0.0000
+-1.4150 <s> GARAGE 0.0000
+-1.4150 <s> HALL 0.0000
+-1.1139 <s> KITCHEN 0.0000
+-1.4150 <s> LIVING 0.0000
+-1.4150 <s> MUSIC 0.0000
+-1.4150 <s> RADIO 0.0000
+-1.4150 <s> TV 0.0000
+-0.3010 BATHROOM LIGHTS 0.0000
+-0.3010 BEDROOM LIGHTS 0.0000
+-0.3010 DIAGNOSTICS </s> -0.3010
+-0.3010 DINNER </s> -0.3010
+-0.3010 DOOR </s> -0.3010
+-0.3010 FRONT DOOR 0.0000
+-0.3010 GARAGE </s> -0.3010
+-0.3010 HALL LIGHTS 0.0000
+-0.6021 KITCHEN LIGHTS 0.0000
+-0.6021 KITCHEN POWER 0.0000
+-0.3010 LIGHTS </s> -0.3010
+-0.3010 LIVING ROOM 0.0000
+-0.3010 MUSIC </s> -0.3010
+-0.3010 POWER </s> -0.3010
+-0.3010 RADIO </s> -0.3010
+-0.3010 ROOM LIGHTS 0.0000
+-0.3010 TV </s> -0.3010
+
+\3-grams:
+-0.3010 <s> BATHROOM LIGHTS
+-0.3010 <s> BEDROOM LIGHTS
+-0.3010 <s> DIAGNOSTICS </s>
+-0.3010 <s> DINNER </s>
+-0.3010 <s> FRONT DOOR
+-0.3010 <s> GARAGE </s>
+-0.3010 <s> HALL LIGHTS
+-0.6021 <s> KITCHEN LIGHTS
+-0.6021 <s> KITCHEN POWER
+-0.3010 <s> LIVING ROOM
+-0.3010 <s> MUSIC </s>
+-0.3010 <s> RADIO </s>
+-0.3010 <s> TV </s>
+-0.3010 BATHROOM LIGHTS </s>
+-0.3010 BEDROOM LIGHTS </s>
+-0.3010 FRONT DOOR </s>
+-0.3010 HALL LIGHTS </s>
+-0.3010 KITCHEN LIGHTS </s>
+-0.3010 KITCHEN POWER </s>
+-0.3010 LIVING ROOM LIGHTS
+-0.3010 ROOM LIGHTS </s>
+
+\end\

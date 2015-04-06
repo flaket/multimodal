@@ -1,0 +1,13 @@
+music
+kitchen lights
+living room lights
+hall lights
+bathroom lights
+bedroom lights
+front door
+garage
+kitchen power
+radio
+tv
+dinner
+diagnostics
