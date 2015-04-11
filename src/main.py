@@ -5,12 +5,16 @@ __author__ = 'andreas'
 import threading
 import pyaudio
 
-from pocketsphinx import *
 from sphinxbase import *
+from pocketsphinx import *
+
+import pyprocessing as processing
 
 hmm = 'cmusphinx-en-us-5.2/'
 lm = 'TAR2860/2860.lm'
 dic = 'TAR2860/2860.dic'
+
+
 
 class PocketSphinx(threading.Thread):
     '''
@@ -85,5 +89,36 @@ def run_pocketsphinx():
         print('Keyboard interrupt.')
         ps.stop()
 
-if __name__ == '__main__':
-    run_pocketsphinx()
+def paint_smooth():
+    processing.smooth()
+    for i in range(10):
+        processing.line(i*5+5,20,i*5+50,80)
+    processing.run()
+
+balls = [(20,20,2.5,3,10),(100,50,-3.5,-3,15)]
+
+def setup():
+    processing.size(400,400)
+    processing.ellipseMode(processing.CENTER)
+    processing.noStroke()
+
+def draw():
+    processing.fill(200,50)
+    processing.rect(0,0,400,400)
+    processing.fill(0)
+    for i in range(len(balls)):
+        x,y,dx,dy,r = balls[i]
+        x += dx
+        if processing.constrain(x,r,400-r) != x: dx = -dx
+        y += dy
+        if processing.constrain(y,r,400-r) != y: dy = -dy
+        balls[i] = x,y,dx,dy,r
+        processing.ellipse(x,y,r,r)
+
+processing.run()
+
+#if __name__ == '__main__':
+    #paint_smooth()
+    #processing = Processing()
+    #processing.start()
+    #run_pocketsphinx()
