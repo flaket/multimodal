@@ -31,7 +31,6 @@ class PocketSphinx(threading.Thread):
         return config
 
     def run(self):
-        print("Pocketsphinx running..")
         self.running = True
         decoder = Decoder(self.configure())
         p = pyaudio.PyAudio()
@@ -51,7 +50,6 @@ class PocketSphinx(threading.Thread):
                         print('Partial decoding result: ' + hypstr)
                 except AttributeError:
                     pass
-                # If the speech has ended:
                 if decoder.get_in_speech() != speaking:
                     speaking = decoder.get_in_speech()
                     # If the speech has ended:
@@ -64,9 +62,7 @@ class PocketSphinx(threading.Thread):
                         except AttributeError:
                             pass
                         decoder.start_utt() # Tell the decoder to prepare for a new sequence of words.
-                        #print('Stopped listening.')
                 else:
-                    #print('Started listening..')
                     pass
             else:
                 break
@@ -89,23 +85,25 @@ def run_pocketsphinx():
         print('Keyboard interrupt.')
         ps.stop()
 
-def paint_smooth():
-    processing.smooth()
-    for i in range(10):
-        processing.line(i*5+5,20,i*5+50,80)
-    processing.run()
 
 balls = [(20,20,2.5,3,10),(100,50,-3.5,-3,15)]
+color = 0
 
 def setup():
-    processing.size(400,400)
+    '''
+    This function is invoked exactly once by processing.run().
+    '''
+    processing.size(400,400,caption="Smart Home multi-modal input")
     processing.ellipseMode(processing.CENTER)
     processing.noStroke()
 
 def draw():
+    '''
+    This function is called by processing.run() on every frame update, ~60 times a second.
+    '''
     processing.fill(200,50)
     processing.rect(0,0,400,400)
-    processing.fill(0)
+    processing.fill(color)
     for i in range(len(balls)):
         x,y,dx,dy,r = balls[i]
         x += dx
@@ -115,10 +113,18 @@ def draw():
         balls[i] = x,y,dx,dy,r
         processing.ellipse(x,y,r,r)
 
-processing.run()
+def keyPressed():
+    global color
+    if processing.key.code == 65364: # Down arrow
+        color = 255
+    if processing.key.code == 65363: # Right arrow
+        color = 150
+    if processing.key.code == 65362: # Up arrow
+        color = 100
+    if processing.key.code == 65361: # Left arrow
+        color = 50
 
-#if __name__ == '__main__':
-    #paint_smooth()
-    #processing = Processing()
-    #processing.start()
+
+if __name__ == '__main__':
+    processing.run()
     #run_pocketsphinx()
