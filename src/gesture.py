@@ -1,39 +1,21 @@
 __author__ = 'andreas'
 
-def connect_serial(ser):
+from serial import Serial
+
+def gesture_recognition(q):
+    time_out = 3
+    baud_rate = 9600
+    port = '/dev/cu.usbmodem1411'
+    ser = Serial(port, baud_rate, timeout=time_out)
     buf = []
     while True:
-        byte = ser.read()
-        if byte == '\n':
-            buf = handle_gesture(buf)
-        elif byte == '\r':
+        c = ser.read()
+        if c == '\n':
+            result = ''.join(buf)
+            print(result)
+            q.put(str(result), block=True, timeout=1)
+            buf = []
+        elif c == '\r':
             pass
         else:
-            buf.append(byte)
-    ser.close()
-
-def disconnect_serial(ser):
-    ser.close()
-
-def handle_gesture(buf):
-    #global queue
-    print(''.join(buf))
-    if buf == 'DOWN':
-        color = 255
-        print('** ' + str(color))
-        #queue.put(color)
-    elif buf == 'RIGHT':
-        color = 150
-        print('** ' + str(color))
-        #queue.put(color)
-    elif buf == 'UP':
-        color = 100
-        print('** ' + str(color))
-        #queue.put(color)
-    elif buf == 'LEFT':
-        color = 50
-        print('** ' + str(color))
-        #queue.put(color)
-    else:
-        pass
-    return []
+            buf.append(c)

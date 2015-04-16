@@ -14,14 +14,13 @@ def config():
     config.set_string('-dict', dic)
     return config
 
-def speech_recognition():
+def speech_recognition(q):
     decoder = Decoder(config())
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1024)
     stream.start_stream()
     speaking = True
     decoder.start_utt()
-
     running = True
     while running:
         buf = stream.read(1024)
@@ -43,6 +42,7 @@ def speech_recognition():
                         if decoder.hyp().hypstr != '':
                             decoded_string = decoder.hyp().hypstr
                             print('Stream decoding result: ' + decoded_string)
+                            q.put(decoded_string, block=True, timeout=1)
                             # Temporary use of 'DOOR' as a quit-keyword:
                             if decoded_string == 'DOOR':
                                 running = False
@@ -55,6 +55,3 @@ def speech_recognition():
     stream.stop_stream()
     stream.close()
     p.terminate()
-
-if __name__ == '__main__':
-    speech_recognition()
