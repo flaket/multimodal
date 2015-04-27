@@ -24,7 +24,7 @@ def dimming_lights(q):
         c = ser.read()
         if c == '\n':
             result = ''.join(buf)
-            print(result)
+            #print(result)
             q.put(('dim', result), block=True, timeout=1)
             buf = []
         elif c == '\r':

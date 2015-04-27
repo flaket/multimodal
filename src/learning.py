@@ -78,30 +78,6 @@ def classify():
         return results
     return "Mismatch in #data samples in data set X and #labels in y"
 
-def trim_data(d, n=512, m=255):
-    """
-    Partitions an input array of data into a feature vector of size n:
-    an n-sized array with normalized values with regard to m.
-    If the input data is of a shorter length than n the returned array will be sparse.
-    A larger input array will produce a denser result.
-    :param d: Input array of data.
-    :param n: Size of result array.
-    :param m: Normalizing factor (maximum possible data value).
-    :return: Array of size param n with input param data distributed over the array
-             and normalized with regard to param m.
-    """
-    l = len(d)
-    histogram = [0] * n
-    s = int(l / n)
-    if s == 0:
-        s = int(1. / (float(l) / float(n)))
-        for i, x in enumerate(d):
-            histogram[i*s] = x/m
-    else:
-        for i in range(0, n):
-            histogram[i] = sum(d[i*s:(i+1)*s])/(m*s)
-    return histogram
-
 def test_trim_data():
     assert [1., 1., 1.] == trim_data([1., 1., 1.], n=3, m=1)
     assert [1., 0., 0.] == trim_data([1.], n=3, m=1)
