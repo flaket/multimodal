@@ -1,6 +1,6 @@
 __author__ = 'andreas'
 
-import serial
+import serial_input
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -54,12 +54,6 @@ def classify():
         results = []
         svc_lin_score = 0
         svc_score = 0
-        kNeighbors_score = 0
-        randomForest_score = 0
-        gradientBoosting_score = 0
-        extraTrees_score = 0
-        bagging_score = 0
-        decisionTree_score = 0
         logisticRegression_score = 0
 
         for i in range(loops):
@@ -75,32 +69,11 @@ def classify():
             logisticRegression = LogisticRegression().fit(X_train, y_train)
             logisticRegression_score = logisticRegression_score + logisticRegression.score(X_test, y_test)
 
-            '''
-            kNeighbors = KNeighborsClassifier().fit(X_train, y_train)
-            kNeighbors_score = kNeighbors_score + kNeighbors.score(X_test, y_test)
-            decisionTree = DecisionTreeClassifier().fit(X_train, y_train)
-            decisionTree_score = decisionTree_score + decisionTree.score(X_test, y_test)
-            randomForest = RandomForestClassifier().fit(X_train, y_train)
-            randomForest_score = randomForest_score + randomForest.score(X_test, y_test)
-            extraTrees = ExtraTreesClassifier().fit(X_train, y_train)
-            extraTrees_score = extraTrees_score + extraTrees.score(X_test, y_test)
-            gradientBoosting = GradientBoostingClassifier().fit(X_train, y_train)
-            gradientBoosting_score = gradientBoosting_score + gradientBoosting.score(X_test, y_test)
-            bagging = BaggingClassifier().fit(X_train, y_train)
-            bagging_score = bagging_score + bagging.score(X_test, y_test)
-            '''
 
         results.append([str(svc_lin_score / loops), "Linear-SVC"])
         results.append([str(svc_score / loops), "SVC"])
         results.append([str(logisticRegression_score / loops), "LogisticRegression"])
-        '''
-        results.append([str(kNeighbors_score / loops), "KNeighbors"])
-        results.append([str(decisionTree_score / loops), "DecisionTree"])
-        results.append([str(randomForest_score / loops), "RandomForest"])
-        results.append([str(extraTrees_score / loops), "ExtraTrees"])
-        results.append([str(bagging_score / loops), "Bagging"])
-        results.append([str(gradientBoosting_score / loops), "GradientBoosting"])
-        '''
+
         results.sort(reverse=True)
         return results
     return "Mismatch in #data samples in data set X and #labels in y"
@@ -140,13 +113,12 @@ def test_trim_data():
     assert [.5, .5, .5] == trim_data([.25, .75, .25, .75, .25, .75], n=3, m=1)
 
 def serial_data_to_q(id, port, q):
-    ser = serial.Serial(port, baud_rate, timeout=time_out)
+    ser = serial_input.Serial(port, baud_rate, timeout=time_out)
     buf = []
     while True:
         c = ser.read()
         if c == '\n':
             result = ''.join(buf)
-            # sort the data?
             q.put((id,result), block=True, timeout=1)
             buf = []
         elif c == '\r':
@@ -169,45 +141,25 @@ def listen_for_gestures():
         three = []
         four = []
         print("Listening for gesture for " + str(time_out) + " seconds..")
-        time.sleep(3)
+        time.sleep(time_out)
          # Look for new data in the queue. Break and process data when queue is empty.
         while True:
             try:
                 data.append(serial_q.get_nowait())
             except Queue.Empty:
                 break
-        #total_data.append(data)
-        # sort the data and store:
-        #data = list(map(float, data))
+        # sort the data from the four sources:
         for d in data:
             if d[0] == 1:
-                raw = d[1]
-                raw = raw.decode()
-                raw = raw.split(' ')
-                del raw[-1]
-                raw = list(map(int, raw))
-                one.extend(raw)
+                # sort data from the four photo diodes:
+                # ..
+                one.extend(process_data(d[1]))
             elif d[0] == 2:
-                raw = d[1]
-                raw = raw.decode()
-                raw = raw.split(' ')
-                del raw[-1]
-                raw = list(map(int, raw))
-                two.extend(raw)
+                two.extend(process_data(d[1]))
             elif d[0] == 3:
-                raw = d[1]
-                raw = raw.decode()
-                raw = raw.split(' ')
-                del raw[-1]
-                raw = list(map(int, raw))
-                three.extend(raw)
+                three.extend(process_data(d[1]))
             elif d[0] == 4:
-                raw = d[1]
-                raw = raw.decode()
-                raw = raw.split(' ')
-                del raw[-1]
-                raw = list(map(int, raw))
-                four.extend(raw)
+                four.extend(process_data(d[1]))
             else:
                 pass
         three.extend(four)
@@ -219,6 +171,13 @@ def listen_for_gestures():
             total_data.append(one)
 
     save_data(total_data)
+
+def process_data(raw):
+    d = raw.decode()
+    d = d.split(' ')
+    del d[-1]
+    d = list(map(int, d))
+    return d
 
 def trim_data(d, n=512, m=255):
     """

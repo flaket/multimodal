@@ -42,7 +42,7 @@ def speech_recognition(q):
                         if decoder.hyp().hypstr != '':
                             decoded_string = decoder.hyp().hypstr
                             print('Stream decoding result: ' + decoded_string)
-                            q.put(decoded_string, block=True, timeout=1)
+                            q.put(('speech', decoded_string), block=True, timeout=1)
                             # Temporary use of 'DOOR' as a quit-keyword:
                             if decoded_string == 'DOOR':
                                 running = False
