@@ -2,10 +2,11 @@ __author__ = 'andreas'
 
 import pyprocessing as p # This import immediately produces a graphics frame.
 import Queue
+import math
 from random import randint
 from threading import Thread
 from speech import speech_recognition
-from serial_input import gesture_recognition, dimming_lights
+from serial_input import gesture_recognition, dimming_lights, lighting_levels
 
 animation_q = Queue.Queue()
 lights_activated = False
@@ -18,12 +19,8 @@ def setup():
     p.ellipseMode(p.CENTER)
     p.noStroke()
 
-    #p.background(200)
-    #p.fill(200,50)
-    #p.rect(0,0,600,600)
-
-    start_thread(speech_recognition, (animation_q,))
-    start_thread(dimming_lights, (animation_q,))
+    #start_thread(speech_recognition, (animation_q,))
+    start_thread(lighting_levels, (animation_q,))
 
 def draw():
     '''Called by pyprocessing.run() on every frame update, ~60 times a second.
@@ -31,8 +28,8 @@ def draw():
     this is only called each time pyprocessing.redraw() is invoked.'''
     try:
         #simple_multi_modal() # Case 2
-        dimming() # Case 3
-        # lighting() # Case 3
+        #dimming() # Case 3
+        lighting() # Case 3
         # machine_learning_multi_modal() # Case 3
     except Queue.Empty:
         pass # there was no new data from the input sources in the queue and nothing is drawn to the screen.
@@ -76,7 +73,26 @@ def dimming():
         pass
 
 def lighting():
-    pass
+    data = animation_q.get_nowait() # non-blocking check for items in animation_q.
+    # If queue is empty a Queue.Empty exception is raised.
+    source = data[0] # data read from queue is a tuple of strings: (source, text)
+    text = data[1]
+    d = text.split(' ')
+    (a, r, g, b) = list(map(int, d)) # max values: 37889
+    if source == 'lighting':
+        p.fill(a,a,a)
+        p.rect(200,100,200,100)
+
+        p.fill(r,0,0,a)
+        p.rect(100,300,100,100)
+
+        p.fill(0,g,0,a)
+        p.rect(250,300,100,100)
+
+        p.fill(0,0,b,a)
+        p.rect(400,300,100,100)
+    else:
+        pass
 
 def machine_learning_multi_modal():
     pass

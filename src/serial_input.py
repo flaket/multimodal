@@ -39,7 +39,7 @@ def lighting_levels(q):
         c = ser.read()
         if c == '\n':
             result = ''.join(buf)
-            print(result)
+            print(result) # max values: 37889
             q.put(('lighting', result), block=True, timeout=1)
             buf = []
         elif c == '\r':
