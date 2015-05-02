@@ -14,16 +14,10 @@ import Queue
 from threading import Thread
 import time
 
-#X = np.loadtxt('data/500.csv', delimiter=',')
-#X = preprocessing.scale(X)
-#y = []
-#samples_per_label = 50
-#loops = 10
-
 time_out = 3
 baud_rate = 9600
 data = []
-samples = 3
+samples = 1
 output_filename = 'test.csv'
 serial_q = Queue.Queue()
 
@@ -102,16 +96,16 @@ def serial_data_to_q(id, port, q):
         else:
             buf.append(c)
 
-def listen_for_gestures():
+def record_gestures():
     # Spin up a thread for each serial port with a common queue for them to write to.
     start_thread(serial_data_to_q, args=(1, '/dev/cu.usbmodem1a1211', serial_q))
-    start_thread(serial_data_to_q, args=(2, '/dev/cu.usbmodem1a1231', serial_q))
-    start_thread(serial_data_to_q, args=(3, '/dev/cu.usbmodem1a1241', serial_q))
-    start_thread(serial_data_to_q, args=(4, '/dev/cu.usbserial-A6026OJT', serial_q))
+    start_thread(serial_data_to_q, args=(2, '/dev/cu.usbmodem1a1221', serial_q))
+    start_thread(serial_data_to_q, args=(3, '/dev/cu.usbmodem1a1231', serial_q))
+    start_thread(serial_data_to_q, args=(4, '/dev/cu.usbmodem1a1241', serial_q))
 
-    total_data = []
+    time.sleep(1)
     for i in range(0, samples):
-        data = []
+        q_data = []
         one = []
         two = []
         three = []
@@ -121,32 +115,63 @@ def listen_for_gestures():
          # Look for new data in the queue. Break and process data when queue is empty.
         while True:
             try:
-                data.append(serial_q.get_nowait())
+                d = serial_q.get_nowait()
+                # sort the data from the four sources:
+                if d[0] == 1:
+                    list_of_data = process_data(d[1])
+                    one.extend(sort_data(list_of_data))
+                elif d[0] == 2:
+                    list_of_data = process_data(d[1])
+                    two.extend(sort_data(list_of_data))
+                elif d[0] == 3:
+                    list_of_data = process_data(d[1])
+                    three.extend(sort_data(list_of_data))
+                elif d[0] == 4:
+                    list_of_data = process_data(d[1])
+                    four.extend(sort_data(list_of_data))
+                else:
+                    pass
             except Queue.Empty:
                 break
-        # sort the data from the four sources:
-        for d in data:
-            if d[0] == 1:
-                # sort data from the four photo diodes:
-                # ..
-                one.extend(process_data(d[1]))
-            elif d[0] == 2:
-                two.extend(process_data(d[1]))
-            elif d[0] == 3:
-                three.extend(process_data(d[1]))
-            elif d[0] == 4:
-                four.extend(process_data(d[1]))
-            else:
-                pass
+        if len(one) < 1:
+            one = [0.0] * 128
+        else:
+            one = trim_data(one)
+        if len(two) < 1:
+            two = [0.0] * 128
+        else:
+            two = trim_data(two)
+        if len(three) < 1:
+            three = [0.0] * 128
+        else:
+            three = trim_data(three)
+        if len(four) < 1:
+            four = [0.0] * 128
+        else:
+            four = trim_data(four)
         three.extend(four)
         two.extend(three)
         one.extend(two)
-        if len(one) > 0:
-            one = map(float, one)
-            one = trim_data(one)
-            total_data.append(one)
+        store_to_memory(one, i)
 
-    save_data(total_data)
+    save_data(data)
+
+def sort_data(list_of_data):
+    # sort data from the four photo diodes:
+    sensor1 = []
+    sensor2 = []
+    sensor3 = []
+    sensor4 = []
+    for j in range(0, len(list_of_data), 4):
+        sensor1.append(list_of_data[j+0])
+        sensor2.append(list_of_data[j+1])
+        sensor3.append(list_of_data[j+2])
+        sensor4.append(list_of_data[j+3])
+    sensor3.extend(sensor4)
+    sensor2.extend(sensor3)
+    sensor1.extend(sensor2)
+    sensor1 = map(float, sensor1)
+    return sensor1
 
 def process_data(raw):
     d = raw.decode()
@@ -155,7 +180,7 @@ def process_data(raw):
     d = list(map(int, d))
     return d
 
-def trim_data(d, n=512, m=255):
+def trim_data(d, n=128, m=255):
     """
     Partitions an input array of data into a feature vector of size n:
     an n-sized array with normalized values with regard to m.
@@ -205,10 +230,18 @@ def start_thread(fn, args):
     worker.start()
 
 if __name__ == '__main__':
+    #X = np.loadtxt('data/500.csv', delimiter=',')
+    #X = preprocessing.scale(X)
+    #y = []
+    #samples_per_label = 50
+    #loops = 10
+
     #test_trim_data()
     #train_classifier()
-    listen_for_gestures()
-    data1 = np.loadtxt('test.csv', delimiter=',')
-    print(len(data1))
-    for line in data1:
-        print("** " + str(line))
+    record_gestures()
+    print(len(data[0]))
+    print(data)
+    #data1 = np.loadtxt('test.csv', delimiter=',')
+    #for line in data1:
+        #print(len(line))
+    #    print(line)

@@ -29,8 +29,8 @@ def draw():
     try:
         #simple_multi_modal() # Case 2
         #dimming() # Case 3
-        lighting() # Case 3
-        # machine_learning_multi_modal() # Case 3
+        #lighting() # Case 3
+        machine_learning_multi_modal() # Case 3
     except Queue.Empty:
         pass # there was no new data from the input sources in the queue and nothing is drawn to the screen.
 
