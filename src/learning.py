@@ -14,34 +14,10 @@ import Queue
 from threading import Thread
 import time
 
-time_out = 3
-baud_rate = 9600
-data = []
-samples = 1
-output_filename = 'test.csv'
-serial_q = Queue.Queue()
+def create_labels(y, samples_per_label):
+    for n in range(42):
+        y.extend([str(n)]*samples_per_label)
 
-def create_labels():
-    for i in range(samples_per_label):
-        y.append("far")
-    for i in range(samples_per_label):
-        y.append("near")
-    for i in range(samples_per_label):
-        y.append("up-swipe")
-    for i in range(samples_per_label):
-        y.append("up-flick")
-    for i in range(samples_per_label):
-        y.append("down-swipe")
-    for i in range(samples_per_label):
-        y.append("down-flick")
-    for i in range(samples_per_label):
-        y.append("left-swipe")
-    for i in range(samples_per_label):
-        y.append("left-flick")
-    for i in range(samples_per_label):
-        y.append("right-swipe")
-    for i in range(samples_per_label):
-        y.append("rigth-flick")
 
 def classify():
     if len(X) == len(y):
@@ -154,8 +130,6 @@ def record_gestures():
         one.extend(two)
         store_to_memory(one, i)
 
-    save_data(data)
-
 def sort_data(list_of_data):
     # sort data from the four photo diodes:
     sensor1 = []
@@ -212,7 +186,7 @@ def store_to_memory(sensor1, n):
     data.append(sensor1)
     print("Stored result to memory: {0}".format(str(n + 1)))
 
-def save_data(data):
+def save_data():
     with open(output_filename, 'wb') as fp:
         a = csv.writer(fp, delimiter=',')
         a.writerows(data)
@@ -229,19 +203,30 @@ def start_thread(fn, args):
     worker.setDaemon(True)
     worker.start()
 
-if __name__ == '__main__':
-    #X = np.loadtxt('data/500.csv', delimiter=',')
-    #X = preprocessing.scale(X)
-    #y = []
-    #samples_per_label = 50
-    #loops = 10
 
-    #test_trim_data()
-    #train_classifier()
+if __name__ == '__main__':
+    #'''
+    X = np.loadtxt('data/40-10.csv', delimiter=',')
+    #X = preprocessing.scale(X)
+    y = []
+    samples_per_label = 10
+    loops = 100
+
+    create_labels(y, samples_per_label)
+    #print(len(X))
+    #print(len(y))
+    r = classify()
+    print(r)
+    #'''
+
+    '''
+    time_out = 3
+    baud_rate = 9600
+    data = []
+    samples = 10
+    output_filename = 'data/sw-fast-10.csv'
+    serial_q = Queue.Queue()
+
     record_gestures()
-    print(len(data[0]))
-    print(data)
-    #data1 = np.loadtxt('test.csv', delimiter=',')
-    #for line in data1:
-        #print(len(line))
-    #    print(line)
+    save_data()
+    '''
