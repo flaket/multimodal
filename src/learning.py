@@ -206,7 +206,7 @@ def start_thread(fn, args):
 
 if __name__ == '__main__':
     #'''
-    X = np.loadtxt('data/40-10.csv', delimiter=',')
+    X = np.loadtxt('data/42-10.csv', delimiter=',')
     #X = preprocessing.scale(X)
     y = []
     samples_per_label = 10

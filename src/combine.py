@@ -51,7 +51,7 @@ data42 = np.loadtxt('data/se-fast-10.csv', delimiter=',')
 
 partition = 1
 
-with open('data/40-10.csv', 'w') as fp:
+with open('data/42-10.csv', 'w') as fp:
     a = csv.writer(fp, delimiter=',')
     a.writerows(data1[:len(data1)/partition])
     a.writerows(data2[:len(data2)/partition])
