@@ -1,0 +1,38 @@
+kitchen
+stove
+oven
+dishwasher
+fridge
+coffee machine
+bathroom
+laundry
+washing machine
+livingroom
+radio
+tv
+bedroom
+hall
+front door
+garage
+port
+car
+lights
+temperature
+blinds
+curtains
+speaker
+volume
+power
+on
+off
+lock
+unlock
+open
+close
+start
+stop
+pause
+up
+down
+increase
+decrease

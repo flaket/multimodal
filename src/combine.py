@@ -13,7 +13,7 @@ data7 = np.loadtxt('data/up-fast-10.csv', delimiter=',')
 data8 = np.loadtxt('data/down-fast-10.csv', delimiter=',')
 data9 = np.loadtxt('data/far-10.csv', delimiter=',')
 data10 = np.loadtxt('data/near-10.csv', delimiter=',')
-
+'''
 data11 = np.loadtxt('data/cover1-10.csv', delimiter=',')
 data12 = np.loadtxt('data/cover2-10.csv', delimiter=',')
 data13 = np.loadtxt('data/cover3-10.csv', delimiter=',')
@@ -48,10 +48,10 @@ data39 = np.loadtxt('data/sw-slow-10.csv', delimiter=',')
 data40 = np.loadtxt('data/sw-fast-10.csv', delimiter=',')
 data41 = np.loadtxt('data/se-slow-10.csv', delimiter=',')
 data42 = np.loadtxt('data/se-fast-10.csv', delimiter=',')
-
+'''
 partition = 1
 
-with open('data/42-10.csv', 'w') as fp:
+with open('data/10-10.csv', 'w') as fp:
     a = csv.writer(fp, delimiter=',')
     a.writerows(data1[:len(data1)/partition])
     a.writerows(data2[:len(data2)/partition])
@@ -63,7 +63,7 @@ with open('data/42-10.csv', 'w') as fp:
     a.writerows(data8[:len(data8)/partition])
     a.writerows(data9[:len(data9)/partition])
     a.writerows(data10[:len(data10)/partition])
-
+'''
     a.writerows(data11[:len(data11)/partition])
     a.writerows(data12[:len(data12)/partition])
     a.writerows(data13[:len(data13)/partition])
@@ -98,5 +98,5 @@ with open('data/42-10.csv', 'w') as fp:
     a.writerows(data40[:len(data40)/partition])
     a.writerows(data41[:len(data41)/partition])
     a.writerows(data42[:len(data42)/partition])
-
+'''
 

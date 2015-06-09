@@ -44,8 +44,8 @@ def speech_recognition(q):
                             print('Stream decoding result: ' + decoded_string)
                             q.put(('speech', decoded_string), block=True, timeout=1)
                             # Temporary use of 'DOOR' as a quit-keyword:
-                            if decoded_string == 'DOOR':
-                                running = False
+                            #if decoded_string == 'DOOR':
+                            #    running = False
                     except AttributeError:
                         pass
                     decoder.start_utt() # Tell the decoder to prepare for a new sequence of words.

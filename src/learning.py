@@ -13,36 +13,57 @@ from sklearn.linear_model import LogisticRegression
 import Queue
 from threading import Thread
 import time
+import math
 
 def create_labels(y, samples_per_label):
     for n in range(42):
         y.extend([str(n)]*samples_per_label)
 
+def std_dev(lst):
+    n = len(lst)
+    c = sum(lst) / n
+    s = sum((x-c)**2 for x in lst)
+    return math.sqrt(s / (n-1))
+
+def confidence(o):
+    return 1.96 * (o / math.sqrt(loops))
 
 def classify():
     if len(X) == len(y):
         results = []
-        svc_lin_score = 0
-        svc_score = 0
-        logisticRegression_score = 0
+        svc_lin_score = []
+        svc_score = []
+        logisticRegression_score = []
 
         for i in range(loops):
             seed = r.randint(0, len(X))
             X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.25, random_state=seed)
 
             svc_lin = svm.LinearSVC().fit(X_train, y_train)
-            svc_lin_score = svc_lin_score + svc_lin.score(X_test, y_test)
+            svc_lin_score.append(svc_lin.score(X_test, y_test))
 
             svc = svm.SVC(kernel='linear').fit(X_train, y_train)
-            svc_score = svc_score + svc.score(X_test, y_test)
+            svc_score.append(svc.score(X_test, y_test))
 
             logisticRegression = LogisticRegression().fit(X_train, y_train)
-            logisticRegression_score = logisticRegression_score + logisticRegression.score(X_test, y_test)
+            logisticRegression_score.append(logisticRegression.score(X_test, y_test))
 
 
-        results.append([str(svc_lin_score / loops), "Linear-SVC"])
-        results.append([str(svc_score / loops), "SVC"])
-        results.append([str(logisticRegression_score / loops), "LogisticRegression"])
+        svclin_std_dev = std_dev(svc_lin_score)
+        svclin_avg = sum(svc_lin_score) / loops
+        svclin_conf = confidence(svclin_std_dev)
+
+        svc_std_dev = std_dev(svc_score)
+        svc_avg = sum(svc_score) / loops
+        svc_conf = confidence(svc_std_dev)
+
+        logres_std_dev = std_dev(logisticRegression_score)
+        logres_avg = sum(logisticRegression_score) / loops
+        logres_conf = confidence(logres_std_dev)
+
+        results.append(["Linear-SVC", svclin_avg, svclin_conf])
+        results.append(["SVC", svc_avg, svc_conf])
+        results.append(["LogisticRegression", logres_avg, logres_conf])
 
         results.sort(reverse=True)
         return results
@@ -207,7 +228,7 @@ def start_thread(fn, args):
 if __name__ == '__main__':
     #'''
     X = np.loadtxt('data/42-10.csv', delimiter=',')
-    #X = preprocessing.scale(X)
+    X = preprocessing.scale(X)
     y = []
     samples_per_label = 10
     loops = 100
